@@ -1,46 +1,27 @@
 # Pacman_02_Multi-Agent-Search
-# Q1: Viết hàm đánh giá đơn giản các hành động trạng thái
+# Q1: viết một hàm đánh giá evaluationFunction trả về số điểm nếu pacman đi vào vị trí cần đánh giá, điểm đánh giá càng cao thì lựa chọn của pacman càng tốt
 
-Tính giá trị của con pacman tại mỗi bước đi bất kỳ là bao nhiêu để chọn theo cái lớn nhất.
+Tìm đường đi ngắn nhất từ pacman đên thức ăn và đường đi ngắn nhất đên con ma khi scareTimer của nó khác 0.
+Giá trị trả về là một số được tính theo successorGameState.getScore() + 5.0 / (nearestFoodDistance + 1) - 15.0 / (nearestGhostDistance + 1), trong đó, càng gần thức ăn thì càng tốt (lựa chọn càng tốt) và càng gần con ma thì càng xấu (lựa chọn xấu dần). Tỷ lệ đầu ra như trên là khá tốt.
 
-Code được implements trong evaluationFunction trả lại giá trị số thực thể hiện đánh giá giá trị bước đi.
+# Q2: Triển khai thuật toán minimax để tìm lựa chọn hướng đi tốt nhất cho pacman
 
-Cách làm: sử dụng 2 đặc trưng : vị trí thức ăn và ví trí các con ma tới pacman
+Hàm minimax(agentIndex, depth, gameState) trong đó agentIndex = 0 là pacman và là ghost khi >= 1, depth là số bước đi cho pacman và gameState ghi lại trạng thái của trò chơi.
+Trạng thái kết thúc khi gameState.isWin() hoặc gameState.isLose() hoặc depth đạt độ sâu giới hạn của trò chơi
+Khi agentIndex = 0 (pacman), ta sẽ tim max khoảng cách từ pacman đến các con ma. Vì panman càng xa các con ma càng tốt
+Khi agentIndex != 0 (ghost), ta sẽ tim min khoảng cách từ ghost đến pacman vì càng gần pacman càng có lợi cho ghost
+Giá trị trả về là lựa chọn tốt nhất trong các lựa chọn có thể có của pacman
 
-Tìm ra vị trí thức ăn gần nhất tới pacman
+# Q3: Triển khai thuật toán Alplha-Beta pruning để cải thiện thuật toán Minimax với alpha là giá trị max tốt nhất và beta là giá trị min tốt nhất
 
-Nếu khoảng cách manhattan từ pacman tới con ma &lt; 2 thì return về -float('inf')
+Thuật toán tương tự như thuật toán minimax ở câu trước nhưng để dễ hình dung với những gì đã học ta sẽ chia thành các hàm minValue() cho ghost và maxValue() cho pacman. Các tham số tương tự như hàm minimax() ở câu trước nhưng có thêm 2 tham số là alpha và beta.
+Giá trị trả về là lựa chọn hướng đi tốt nhất cho pacman
 
-# Q2: Sử dụng thuật toán minimax triển khai trong class MinimaxAgent ở hàm getAction
+# Q4: Triển khai ExpectimaxAgent, rất hữu ích để mô hình hóa hành vi xác suất của các tác nhân có thể đưa ra lựa chọn dưới mức tối ưu.
 
-Mỗi tầng max có n tầng min bên dưới (n là số con ma)
+Làm tương tự như thuật toán minimax trong q2 nhưng thay vì tìm min khi agentIndex != 0 thì ta sẽ tính trung bình điểm số đạt được của các hành động (vì các con ghost xuất hiện ngẫu nhiên nên xác suất sẽ có giá trị như nhau).
+Giá trị trả về là lựa chọn hướng đi tốt nhất cho pacman
 
-Max là các node của pacman
+# Q5: Viết một hàm đánh giá tốt hơn cho pacman trong hàm betterEvaluationFunction. Trong trường hợp này thay vì đánh giá trạng thái tiếp theo sau khi pacman hành động như q1 thì ta sẽ đánh giá trạng thái hiện tại.
 
-Min là các node của con ma
-
-Cách làm: viết hàm minimaxSearch đệ quy theo thuật toán minimax
-
-Trong hàm này em có thêm vào biến turn: đếm số lượt các con ma
-
-Depth: độ sâu của cây tìm kiếm
-
-Evals là mảng tính các node con của từng node bằng cách đệ quy.
-
-Nếu là ma thì return min của evals còn nếu là pacman thì return max
-
-# Q3: Sử dụng thuật toán tỉa alphabeta triển khai trong class AlphaBetaAgent ở hàm getAction
-
-Tương tự như thuật toán minimax thêm 2 biến alpha beta để cắt các nhánh
-
-Sử dụng thuật toán như trong phần guide của Q3
-
-Q4: Expectimax triển khai tại class ExpectimaxAgent trong hàm getAction
-
-Tương tự thuật toán minimax
-
-Ở các node min thì được thay bằng các node expec. Thay vì lấy min của các node con thì node expec sẽ lấy trung bình
-
-# Q5. Viết một hàm đánh giá mới
-
-Chọn thêm các đặc trưng cho hàm đánh giá: vị trí thức ăn, số con ma có manhattan tới pacman &lt; 3 và số con ma không sợ pacman
+Vì là hàm đánh giá nên có thể sử dụng lại cách giải đã dùng ở q1 và lược bỏ các phần không cần thiết như
